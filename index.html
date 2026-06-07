@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Destin Flow</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Crect width='1024' height='1024' fill='%23050806'/%3E%3Cpath d='M 132.37 384.55 L 130.56 388.17 L 130.56 742.49 L 132.37 746.11 L 137.79 746.11 L 148.64 738.88 L 175.75 726.22 L 181.18 720.80 L 181.18 438.79 L 182.99 436.98 L 352.92 436.98 L 390.88 446.02 L 427.03 465.90 L 463.19 502.06 L 483.08 540.02 L 490.31 568.94 L 490.31 585.21 L 492.11 587.02 L 490.31 615.95 L 481.27 650.29 L 463.19 682.83 L 432.46 715.37 L 414.38 728.03 L 392.69 738.88 L 363.76 747.91 L 354.72 747.91 L 352.92 749.72 L 266.14 749.72 L 264.34 751.53 L 251.68 751.53 L 217.33 758.76 L 172.14 776.84 L 148.64 793.11 L 135.98 807.57 L 130.56 818.42 L 130.56 861.80 L 134.18 867.23 L 173.95 867.23 L 179.37 861.80 L 179.37 838.30 L 188.41 827.46 L 210.10 816.61 L 257.10 803.96 L 318.57 802.15 L 320.38 803.96 L 347.49 805.76 L 401.73 820.22 L 459.57 843.73 L 524.65 874.46 L 595.16 899.77 L 633.12 908.81 L 667.47 912.42 L 669.28 914.23 L 736.16 916.04 L 737.97 914.23 L 757.86 914.23 L 759.66 912.42 L 783.17 910.61 L 822.94 901.57 L 850.05 892.54 L 882.59 878.07 L 891.63 867.23 L 891.63 823.84 L 889.82 820.22 L 880.79 820.22 L 869.94 827.46 L 866.32 827.46 L 841.01 840.11 L 786.78 856.38 L 754.24 860.00 L 752.43 861.80 L 730.74 861.80 L 728.93 863.61 L 674.70 861.80 L 672.89 860.00 L 640.35 856.38 L 587.93 841.92 L 432.46 775.03 L 443.30 769.61 L 472.23 747.91 L 499.35 718.99 L 521.04 684.64 L 531.89 659.33 L 539.12 632.22 L 542.73 585.21 L 540.92 583.41 L 540.92 565.33 L 533.69 530.98 L 517.42 493.02 L 493.92 458.67 L 470.42 435.17 L 443.30 415.28 L 405.34 397.21 L 361.96 386.36 L 345.69 386.36 L 343.88 384.55 L 222.76 384.55 L 220.95 382.74 L 512.00 165.81 L 841.01 413.48 L 841.01 471.33 L 839.21 473.13 L 654.81 473.13 L 627.70 478.56 L 613.24 485.79 L 596.97 500.25 L 584.31 521.94 L 578.89 549.06 L 578.89 785.88 L 580.70 793.11 L 587.93 798.53 L 620.47 809.38 L 625.89 809.38 L 631.31 803.96 L 631.31 688.26 L 633.12 686.45 L 853.67 686.45 L 859.09 679.22 L 859.09 644.87 L 850.05 635.83 L 633.12 635.83 L 631.31 634.02 L 631.31 543.64 L 633.12 538.21 L 642.16 529.17 L 651.20 525.56 L 884.40 525.56 L 888.02 523.75 L 891.63 518.33 L 891.63 389.98 L 889.82 384.55 L 521.04 107.96 L 504.77 106.16 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="onboarding" class="onboarding" hidden>
+    <div class="onboarding-panel">
+      <div class="brand onboarding-brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 1024 1024" aria-hidden="true">
+            <path d="M 132.37 384.55 L 130.56 388.17 L 130.56 742.49 L 132.37 746.11 L 137.79 746.11 L 148.64 738.88 L 175.75 726.22 L 181.18 720.80 L 181.18 438.79 L 182.99 436.98 L 352.92 436.98 L 390.88 446.02 L 427.03 465.90 L 463.19 502.06 L 483.08 540.02 L 490.31 568.94 L 490.31 585.21 L 492.11 587.02 L 490.31 615.95 L 481.27 650.29 L 463.19 682.83 L 432.46 715.37 L 414.38 728.03 L 392.69 738.88 L 363.76 747.91 L 354.72 747.91 L 352.92 749.72 L 266.14 749.72 L 264.34 751.53 L 251.68 751.53 L 217.33 758.76 L 172.14 776.84 L 148.64 793.11 L 135.98 807.57 L 130.56 818.42 L 130.56 861.80 L 134.18 867.23 L 173.95 867.23 L 179.37 861.80 L 179.37 838.30 L 188.41 827.46 L 210.10 816.61 L 257.10 803.96 L 318.57 802.15 L 320.38 803.96 L 347.49 805.76 L 401.73 820.22 L 459.57 843.73 L 524.65 874.46 L 595.16 899.77 L 633.12 908.81 L 667.47 912.42 L 669.28 914.23 L 736.16 916.04 L 737.97 914.23 L 757.86 914.23 L 759.66 912.42 L 783.17 910.61 L 822.94 901.57 L 850.05 892.54 L 882.59 878.07 L 891.63 867.23 L 891.63 823.84 L 889.82 820.22 L 880.79 820.22 L 869.94 827.46 L 866.32 827.46 L 841.01 840.11 L 786.78 856.38 L 754.24 860.00 L 752.43 861.80 L 730.74 861.80 L 728.93 863.61 L 674.70 861.80 L 672.89 860.00 L 640.35 856.38 L 587.93 841.92 L 432.46 775.03 L 443.30 769.61 L 472.23 747.91 L 499.35 718.99 L 521.04 684.64 L 531.89 659.33 L 539.12 632.22 L 542.73 585.21 L 540.92 583.41 L 540.92 565.33 L 533.69 530.98 L 517.42 493.02 L 493.92 458.67 L 470.42 435.17 L 443.30 415.28 L 405.34 397.21 L 361.96 386.36 L 345.69 386.36 L 343.88 384.55 L 222.76 384.55 L 220.95 382.74 L 512.00 165.81 L 841.01 413.48 L 841.01 471.33 L 839.21 473.13 L 654.81 473.13 L 627.70 478.56 L 613.24 485.79 L 596.97 500.25 L 584.31 521.94 L 578.89 549.06 L 578.89 785.88 L 580.70 793.11 L 587.93 798.53 L 620.47 809.38 L 625.89 809.38 L 631.31 803.96 L 631.31 688.26 L 633.12 686.45 L 853.67 686.45 L 859.09 679.22 L 859.09 644.87 L 850.05 635.83 L 633.12 635.83 L 631.31 634.02 L 631.31 543.64 L 633.12 538.21 L 642.16 529.17 L 651.20 525.56 L 884.40 525.56 L 888.02 523.75 L 891.63 518.33 L 891.63 389.98 L 889.82 384.55 L 521.04 107.96 L 504.77 106.16 Z"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Destin Flow</strong>
+          <span>Configura tu espacio inicial</span>
+        </div>
+      </div>
+      <div class="login-shell">
+        <div class="login-card">
+          <div class="login-logo" aria-hidden="true">
+            <svg viewBox="0 0 1024 1024">
+              <path d="M 132.37 384.55 L 130.56 388.17 L 130.56 742.49 L 132.37 746.11 L 137.79 746.11 L 148.64 738.88 L 175.75 726.22 L 181.18 720.80 L 181.18 438.79 L 182.99 436.98 L 352.92 436.98 L 390.88 446.02 L 427.03 465.90 L 463.19 502.06 L 483.08 540.02 L 490.31 568.94 L 490.31 585.21 L 492.11 587.02 L 490.31 615.95 L 481.27 650.29 L 463.19 682.83 L 432.46 715.37 L 414.38 728.03 L 392.69 738.88 L 363.76 747.91 L 354.72 747.91 L 352.92 749.72 L 266.14 749.72 L 264.34 751.53 L 251.68 751.53 L 217.33 758.76 L 172.14 776.84 L 148.64 793.11 L 135.98 807.57 L 130.56 818.42 L 130.56 861.80 L 134.18 867.23 L 173.95 867.23 L 179.37 861.80 L 179.37 838.30 L 188.41 827.46 L 210.10 816.61 L 257.10 803.96 L 318.57 802.15 L 320.38 803.96 L 347.49 805.76 L 401.73 820.22 L 459.57 843.73 L 524.65 874.46 L 595.16 899.77 L 633.12 908.81 L 667.47 912.42 L 669.28 914.23 L 736.16 916.04 L 737.97 914.23 L 757.86 914.23 L 759.66 912.42 L 783.17 910.61 L 822.94 901.57 L 850.05 892.54 L 882.59 878.07 L 891.63 867.23 L 891.63 823.84 L 889.82 820.22 L 880.79 820.22 L 869.94 827.46 L 866.32 827.46 L 841.01 840.11 L 786.78 856.38 L 754.24 860.00 L 752.43 861.80 L 730.74 861.80 L 728.93 863.61 L 674.70 861.80 L 672.89 860.00 L 640.35 856.38 L 587.93 841.92 L 432.46 775.03 L 443.30 769.61 L 472.23 747.91 L 499.35 718.99 L 521.04 684.64 L 531.89 659.33 L 539.12 632.22 L 542.73 585.21 L 540.92 583.41 L 540.92 565.33 L 533.69 530.98 L 517.42 493.02 L 493.92 458.67 L 470.42 435.17 L 443.30 415.28 L 405.34 397.21 L 361.96 386.36 L 345.69 386.36 L 343.88 384.55 L 222.76 384.55 L 220.95 382.74 L 512.00 165.81 L 841.01 413.48 L 841.01 471.33 L 839.21 473.13 L 654.81 473.13 L 627.70 478.56 L 613.24 485.79 L 596.97 500.25 L 584.31 521.94 L 578.89 549.06 L 578.89 785.88 L 580.70 793.11 L 587.93 798.53 L 620.47 809.38 L 625.89 809.38 L 631.31 803.96 L 631.31 688.26 L 633.12 686.45 L 853.67 686.45 L 859.09 679.22 L 859.09 644.87 L 850.05 635.83 L 633.12 635.83 L 631.31 634.02 L 631.31 543.64 L 633.12 538.21 L 642.16 529.17 L 651.20 525.56 L 884.40 525.56 L 888.02 523.75 L 891.63 518.33 L 891.63 389.98 L 889.82 384.55 L 521.04 107.96 L 504.77 106.16 Z"/>
+            </svg>
+          </div>
+          <h1>Destin Flow</h1>
+          <p>Familia y negocio, separados y claros.</p>
+          <button id="onboarding-google-sign-in" class="google-action" type="button">Continuar con Google</button>
+          <div class="login-divider"><span>o probar sin cuenta</span></div>
+          <details class="local-details">
+            <summary>Modo local</summary>
+            <form id="onboarding-form" class="onboarding-form">
+              <label>Nombre local<input type="text" name="localName" required placeholder="Ej. Jorge"></label>
+              <div class="choice-grid compact-choice-grid">
+                <label class="choice-card">
+                  <input type="radio" name="usageMode" value="family" required>
+                  <strong>Familia</strong>
+                </label>
+                <label class="choice-card">
+                  <input type="radio" name="usageMode" value="business" required>
+                  <strong>Negocio</strong>
+                </label>
+                <label class="choice-card wide-choice">
+                  <input type="radio" name="usageMode" value="both" required checked>
+                  <strong>Ambos</strong>
+                </label>
+              </div>
+              <button type="submit" class="secondary-action">Entrar local</button>
+            </form>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="app-shell" id="app-shell" hidden>
+    <header class="mobile-header">
+      <div class="brand mobile-brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 1024 1024" aria-hidden="true">
+            <path d="M 132.37 384.55 L 130.56 388.17 L 130.56 742.49 L 132.37 746.11 L 137.79 746.11 L 148.64 738.88 L 175.75 726.22 L 181.18 720.80 L 181.18 438.79 L 182.99 436.98 L 352.92 436.98 L 390.88 446.02 L 427.03 465.90 L 463.19 502.06 L 483.08 540.02 L 490.31 568.94 L 490.31 585.21 L 492.11 587.02 L 490.31 615.95 L 481.27 650.29 L 463.19 682.83 L 432.46 715.37 L 414.38 728.03 L 392.69 738.88 L 363.76 747.91 L 354.72 747.91 L 352.92 749.72 L 266.14 749.72 L 264.34 751.53 L 251.68 751.53 L 217.33 758.76 L 172.14 776.84 L 148.64 793.11 L 135.98 807.57 L 130.56 818.42 L 130.56 861.80 L 134.18 867.23 L 173.95 867.23 L 179.37 861.80 L 179.37 838.30 L 188.41 827.46 L 210.10 816.61 L 257.10 803.96 L 318.57 802.15 L 320.38 803.96 L 347.49 805.76 L 401.73 820.22 L 459.57 843.73 L 524.65 874.46 L 595.16 899.77 L 633.12 908.81 L 667.47 912.42 L 669.28 914.23 L 736.16 916.04 L 737.97 914.23 L 757.86 914.23 L 759.66 912.42 L 783.17 910.61 L 822.94 901.57 L 850.05 892.54 L 882.59 878.07 L 891.63 867.23 L 891.63 823.84 L 889.82 820.22 L 880.79 820.22 L 869.94 827.46 L 866.32 827.46 L 841.01 840.11 L 786.78 856.38 L 754.24 860.00 L 752.43 861.80 L 730.74 861.80 L 728.93 863.61 L 674.70 861.80 L 672.89 860.00 L 640.35 856.38 L 587.93 841.92 L 432.46 775.03 L 443.30 769.61 L 472.23 747.91 L 499.35 718.99 L 521.04 684.64 L 531.89 659.33 L 539.12 632.22 L 542.73 585.21 L 540.92 583.41 L 540.92 565.33 L 533.69 530.98 L 517.42 493.02 L 493.92 458.67 L 470.42 435.17 L 443.30 415.28 L 405.34 397.21 L 361.96 386.36 L 345.69 386.36 L 343.88 384.55 L 222.76 384.55 L 220.95 382.74 L 512.00 165.81 L 841.01 413.48 L 841.01 471.33 L 839.21 473.13 L 654.81 473.13 L 627.70 478.56 L 613.24 485.79 L 596.97 500.25 L 584.31 521.94 L 578.89 549.06 L 578.89 785.88 L 580.70 793.11 L 587.93 798.53 L 620.47 809.38 L 625.89 809.38 L 631.31 803.96 L 631.31 688.26 L 633.12 686.45 L 853.67 686.45 L 859.09 679.22 L 859.09 644.87 L 850.05 635.83 L 633.12 635.83 L 631.31 634.02 L 631.31 543.64 L 633.12 538.21 L 642.16 529.17 L 651.20 525.56 L 884.40 525.56 L 888.02 523.75 L 891.63 518.33 L 891.63 389.98 L 889.82 384.55 L 521.04 107.96 L 504.77 106.16 Z"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Destin Flow</strong>
+          <span>Familia y negocio</span>
+        </div>
+      </div>
+      <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+    <button id="sidebar-overlay" class="sidebar-overlay" type="button" aria-label="Cerrar menu"></button>
+    <aside class="sidebar" id="sidebar" aria-label="Navegacion principal">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 1024 1024" aria-hidden="true">
+            <path d="M 132.37 384.55 L 130.56 388.17 L 130.56 742.49 L 132.37 746.11 L 137.79 746.11 L 148.64 738.88 L 175.75 726.22 L 181.18 720.80 L 181.18 438.79 L 182.99 436.98 L 352.92 436.98 L 390.88 446.02 L 427.03 465.90 L 463.19 502.06 L 483.08 540.02 L 490.31 568.94 L 490.31 585.21 L 492.11 587.02 L 490.31 615.95 L 481.27 650.29 L 463.19 682.83 L 432.46 715.37 L 414.38 728.03 L 392.69 738.88 L 363.76 747.91 L 354.72 747.91 L 352.92 749.72 L 266.14 749.72 L 264.34 751.53 L 251.68 751.53 L 217.33 758.76 L 172.14 776.84 L 148.64 793.11 L 135.98 807.57 L 130.56 818.42 L 130.56 861.80 L 134.18 867.23 L 173.95 867.23 L 179.37 861.80 L 179.37 838.30 L 188.41 827.46 L 210.10 816.61 L 257.10 803.96 L 318.57 802.15 L 320.38 803.96 L 347.49 805.76 L 401.73 820.22 L 459.57 843.73 L 524.65 874.46 L 595.16 899.77 L 633.12 908.81 L 667.47 912.42 L 669.28 914.23 L 736.16 916.04 L 737.97 914.23 L 757.86 914.23 L 759.66 912.42 L 783.17 910.61 L 822.94 901.57 L 850.05 892.54 L 882.59 878.07 L 891.63 867.23 L 891.63 823.84 L 889.82 820.22 L 880.79 820.22 L 869.94 827.46 L 866.32 827.46 L 841.01 840.11 L 786.78 856.38 L 754.24 860.00 L 752.43 861.80 L 730.74 861.80 L 728.93 863.61 L 674.70 861.80 L 672.89 860.00 L 640.35 856.38 L 587.93 841.92 L 432.46 775.03 L 443.30 769.61 L 472.23 747.91 L 499.35 718.99 L 521.04 684.64 L 531.89 659.33 L 539.12 632.22 L 542.73 585.21 L 540.92 583.41 L 540.92 565.33 L 533.69 530.98 L 517.42 493.02 L 493.92 458.67 L 470.42 435.17 L 443.30 415.28 L 405.34 397.21 L 361.96 386.36 L 345.69 386.36 L 343.88 384.55 L 222.76 384.55 L 220.95 382.74 L 512.00 165.81 L 841.01 413.48 L 841.01 471.33 L 839.21 473.13 L 654.81 473.13 L 627.70 478.56 L 613.24 485.79 L 596.97 500.25 L 584.31 521.94 L 578.89 549.06 L 578.89 785.88 L 580.70 793.11 L 587.93 798.53 L 620.47 809.38 L 625.89 809.38 L 631.31 803.96 L 631.31 688.26 L 633.12 686.45 L 853.67 686.45 L 859.09 679.22 L 859.09 644.87 L 850.05 635.83 L 633.12 635.83 L 631.31 634.02 L 631.31 543.64 L 633.12 538.21 L 642.16 529.17 L 651.20 525.56 L 884.40 525.56 L 888.02 523.75 L 891.63 518.33 L 891.63 389.98 L 889.82 384.55 L 521.04 107.96 L 504.77 106.16 Z"/>
+          </svg>
+        </div>
+        <div>
+          <strong>Destin Flow</strong>
+          <span>Familia y negocio</span>
+        </div>
+      </div>
+
+      <nav class="main-nav">
+        <button class="nav-item active" data-view="dashboard">Dashboard</button>
+        <button class="nav-item" data-view="family" data-scope="family">Familia</button>
+        <button class="nav-item" data-view="family-expense" data-scope="family">Gasto familiar</button>
+        <button class="nav-item" data-view="members" data-scope="family">Miembros</button>
+        <button class="nav-item" data-view="payments">Metodos de pago</button>
+        <button class="nav-item" data-view="business" data-scope="business">Negocios</button>
+        <button class="nav-item" data-view="business-expense" data-scope="business">Gasto negocio</button>
+        <button class="nav-item" data-view="reports">Reportes</button>
+        <button class="nav-item" data-view="settings">Configuracion</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">MVP local</p>
+          <h1 id="view-title">Dashboard general</h1>
+        </div>
+        <div class="topbar-actions">
+          <label class="group-switcher">Grupo activo<select id="active-group-select"></select></label>
+          <div class="month-pill" id="role-status">Rol: admin</div>
+          <div class="month-pill" id="current-month-label"></div>
+          <div class="month-pill" id="save-status">Guardado local</div>
+          <div class="month-pill sync-pill" id="sync-status">Solo local</div>
+        </div>
+      </header>
+
+      <section id="dashboard" class="view active-view">
+        <div class="metric-grid" id="dashboard-metrics"></div>
+        <div class="quick-actions">
+          <button class="secondary-action" data-jump="family-expense" data-scope="family">Agregar gasto familiar</button>
+          <button class="secondary-action" data-jump="business-expense" data-scope="business">Agregar gasto negocio</button>
+          <button class="secondary-action" data-jump="reports">Ver reportes</button>
+        </div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Alertas</h2>
+              <span>Reglas automaticas</span>
+            </div>
+            <div class="insight-list" id="alerts-list"></div>
+          </section>
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Insights</h2>
+              <span>Lectura rapida</span>
+            </div>
+            <div class="insight-list" id="insights-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="family" class="view">
+        <div class="section-heading">
+          <h2>Familia</h2>
+          <span id="family-summary-label"></span>
+        </div>
+        <div class="metric-grid" id="family-metrics"></div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Gastos recientes</h2>
+            <span id="family-expenses-count">Solo familiares</span>
+          </div>
+          <div class="table-tools">
+            <label>Buscar gastos familiares<input id="family-expense-filter" type="search" placeholder="Miembro, categoria, metodo, monto..."></label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Miembro</th>
+                  <th>Categoria</th>
+                  <th>Metodo</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="family-expenses-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="family-expense" class="view">
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Agregar gasto familiar</h2>
+            <span>Formulario base</span>
+          </div>
+          <form id="family-expense-form" class="form-grid">
+            <label>Monto<input type="number" min="0.01" step="0.01" name="amount" required></label>
+            <label>Fecha<input type="date" name="date" required></label>
+            <label>Miembro<select name="memberId" required></select></label>
+            <label>Categoria<select name="category" required></select></label>
+            <label>Metodo de pago<select name="paymentMethodId" required></select></label>
+            <label>Estado
+              <select name="paymentStatus">
+                <option value="pagado">Pagado</option>
+                <option value="pendiente">Pendiente</option>
+              </select>
+            </label>
+            <label class="wide">Descripcion<input type="text" name="description" placeholder="Opcional"></label>
+            <button type="submit" class="primary-action">Guardar gasto familiar</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="members" class="view">
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Agregar miembro</h2>
+            <span>Persona del grupo</span>
+          </div>
+          <form id="member-form" class="form-grid">
+            <label>Nombre<input type="text" name="name" required placeholder="Ej. Abuelo"></label>
+            <label>Rol
+              <select name="role">
+                <option value="papa">Papa</option>
+                <option value="mama">Mama</option>
+                <option value="hijo">Hijo</option>
+                <option value="hija">Hija</option>
+                <option value="otro">Otro</option>
+              </select>
+            </label>
+            <label>Color<input type="color" name="color" value="#1f7a4d"></label>
+            <label>Estado
+              <select name="status">
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
+            </label>
+            <button type="submit" class="primary-action">Guardar miembro</button>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Miembros</h2>
+            <span>Grupo familiar</span>
+          </div>
+          <div class="card-grid" id="members-list"></div>
+        </div>
+      </section>
+
+      <section id="payments" class="view">
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Agregar metodo de pago</h2>
+            <span>Individual o compartido</span>
+          </div>
+          <form id="payment-form" class="form-grid">
+            <label>Nombre<input type="text" name="name" required placeholder="Ej. Mastercard Negocio"></label>
+            <label>Tipo
+              <select name="type">
+                <option value="efectivo">Efectivo</option>
+                <option value="tarjeta">Tarjeta</option>
+                <option value="transferencia">Transferencia</option>
+                <option value="Yappy">Yappy</option>
+                <option value="ACH">ACH</option>
+                <option value="otro">Otro</option>
+              </select>
+            </label>
+            <label>Dueno principal<select name="ownerId" required></select></label>
+            <label>Limite mensual<input type="number" min="0" step="0.01" name="monthlyLimit" placeholder="Opcional"></label>
+            <label>Compartido
+              <select name="shared">
+                <option value="true">Si</option>
+                <option value="false">No</option>
+              </select>
+            </label>
+            <fieldset class="wide checkbox-panel">
+              <legend>Miembros que pueden usarlo</legend>
+              <div id="payment-members-options" class="checkbox-grid"></div>
+            </fieldset>
+            <button type="submit" class="primary-action">Guardar metodo</button>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Metodos de pago</h2>
+            <span>Uso y limites</span>
+          </div>
+          <div class="card-grid" id="payments-list"></div>
+        </div>
+      </section>
+
+      <section id="business" class="view">
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Agregar negocio</h2>
+            <span>Perfil separado</span>
+          </div>
+          <form id="business-form" class="form-grid">
+            <label>Nombre<input type="text" name="name" required placeholder="Ej. Tienda Online"></label>
+            <label>Tipo de negocio<input type="text" name="type" required placeholder="Ej. Servicios digitales"></label>
+            <label>Moneda<input type="text" name="currency" value="USD" maxlength="3" required></label>
+            <label class="wide">Descripcion<input type="text" name="description" placeholder="Opcional"></label>
+            <button type="submit" class="primary-action">Guardar negocio</button>
+          </form>
+        </div>
+        <div class="section-heading">
+          <h2>Negocios</h2>
+          <span>Separados de familia</span>
+        </div>
+        <div class="metric-grid" id="business-metrics"></div>
+        <div class="card-grid" id="business-list"></div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Gastos recientes</h2>
+            <span id="business-expenses-count">Solo negocio</span>
+          </div>
+          <div class="table-tools">
+            <label>Buscar gastos de negocio<input id="business-expense-filter" type="search" placeholder="Negocio, categoria, proveedor, responsable..."></label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Negocio</th>
+                  <th>Categoria</th>
+                  <th>Metodo</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="business-expenses-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="business-expense" class="view">
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Agregar gasto de negocio</h2>
+            <span>Formulario base</span>
+          </div>
+          <form id="business-expense-form" class="form-grid">
+            <label>Negocio<select name="businessId" required></select></label>
+            <label>Monto<input type="number" min="0.01" step="0.01" name="amount" required></label>
+            <label>Fecha<input type="date" name="date" required></label>
+            <label>Categoria<select name="category" required></select></label>
+            <label>Metodo de pago<select name="paymentMethodId" required></select></label>
+            <label>Estado
+              <select name="paymentStatus">
+                <option value="pagado">Pagado</option>
+                <option value="pendiente">Pendiente</option>
+              </select>
+            </label>
+            <label>Proveedor<input type="text" name="vendor" placeholder="Opcional"></label>
+            <label>Responsable<input type="text" name="responsible" placeholder="Opcional"></label>
+            <label class="wide">Descripcion<input type="text" name="description" placeholder="Opcional"></label>
+            <button type="submit" class="primary-action">Guardar gasto de negocio</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="reports" class="view">
+        <div class="metric-grid" id="report-metrics"></div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Por persona</h2>
+              <span>Mes actual</span>
+            </div>
+            <div id="person-report" class="stack-list"></div>
+          </section>
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Por metodo</h2>
+              <span>Mes actual</span>
+            </div>
+            <div id="payment-report" class="stack-list"></div>
+          </section>
+        </div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Por categoria</h2>
+              <span>Familia y negocio</span>
+            </div>
+            <div id="category-report" class="stack-list"></div>
+          </section>
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Por negocio</h2>
+              <span>Mes actual</span>
+            </div>
+            <div id="business-report" class="stack-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="settings" class="view">
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Grupos</h2>
+            <span>Familia, amigos o negocio</span>
+          </div>
+          <form id="group-form" class="form-grid">
+            <label>Nombre del grupo<input type="text" name="groupName" required placeholder="Ej. Familia Perez"></label>
+            <label>Tipo
+              <select name="groupType">
+                <option value="familia">Familia</option>
+                <option value="amigos">Amigos</option>
+                <option value="negocio">Negocio</option>
+                <option value="otro">Otro</option>
+              </select>
+            </label>
+            <label>Administrador<input type="text" name="adminName" required placeholder="Ej. Papa"></label>
+            <label>Correo admin<input type="email" name="adminEmail" required placeholder="admin@correo.com"></label>
+            <button type="submit" class="primary-action">Crear grupo</button>
+          </form>
+          <div class="two-column">
+            <section>
+              <div class="section-heading">
+                <h2>Activos</h2>
+                <span id="active-groups-count"></span>
+              </div>
+              <div id="active-groups-list" class="card-grid compact-grid"></div>
+            </section>
+            <section>
+              <div class="section-heading">
+                <h2>Archivados</h2>
+                <span id="archived-groups-count"></span>
+              </div>
+              <div id="archived-groups-list" class="card-grid compact-grid"></div>
+            </section>
+          </div>
+        </div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Invitar al grupo activo</h2>
+              <span>Simulado local</span>
+            </div>
+            <form id="invite-form" class="form-grid">
+              <label>Nombre invitado<input type="text" name="inviteName" required placeholder="Ej. Mama"></label>
+              <label>Correo<input type="email" name="inviteEmail" required placeholder="persona@correo.com"></label>
+              <label>Rol
+                <select name="inviteRole">
+                  <option value="miembro">Miembro</option>
+                  <option value="admin">Admin</option>
+                  <option value="solo_lectura">Solo lectura</option>
+                </select>
+              </label>
+              <button type="submit" class="primary-action">Crear invitacion</button>
+            </form>
+          </section>
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Invitaciones</h2>
+              <span>Pendientes y aceptadas</span>
+            </div>
+            <div id="invitations-list" class="stack-list"></div>
+          </section>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Administrador del grupo</h2>
+            <span>Transferencia local</span>
+          </div>
+          <form id="transfer-admin-form" class="form-grid">
+            <label>Nuevo administrador<select name="newAdminId" required></select></label>
+            <button type="submit" class="primary-action">Transferir administracion</button>
+          </form>
+          <div id="admin-status" class="stack-list"></div>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Grupo familiar</h2>
+            <span>Configuracion del MVP</span>
+          </div>
+          <form id="settings-form" class="form-grid">
+            <label>Nombre del grupo<input type="text" name="familyName" required></label>
+            <label>Moneda principal<input type="text" name="currency" maxlength="3" required></label>
+            <label>Mes de control<input type="month" name="controlMonth" required></label>
+            <label>Presupuesto familiar mensual<input type="number" min="0" step="0.01" name="familyBudget" placeholder="Opcional"></label>
+            <label>Presupuesto negocio mensual<input type="number" min="0" step="0.01" name="businessBudget" placeholder="Opcional"></label>
+            <button type="submit" class="primary-action">Guardar configuracion</button>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Cuenta en la nube</h2>
+            <span>Supabase</span>
+          </div>
+          <p class="muted">La app sigue funcionando localmente. Si entras con Google o correo, puedes guardar copias y compartir grupos desde Supabase.</p>
+          <div id="cloud-status" class="stack-list"></div>
+          <div class="button-row">
+            <button id="cloud-google-sign-in" class="secondary-action" type="button">Continuar con Google</button>
+          </div>
+          <form id="cloud-auth-form" class="form-grid">
+            <label>Correo cloud<input type="email" name="cloudEmail" required placeholder="tu@correo.com"></label>
+            <label>Contrasena<input type="password" name="cloudPassword" required minlength="6" placeholder="Minimo 6 caracteres"></label>
+            <label>Accion
+              <select name="cloudAction">
+                <option value="signin">Iniciar sesion</option>
+                <option value="signup">Crear cuenta</option>
+              </select>
+            </label>
+            <button type="submit" class="primary-action">Continuar</button>
+          </form>
+          <div class="button-row">
+            <button id="cloud-upload" class="secondary-action" type="button">Subir datos locales</button>
+            <button id="cloud-download" class="secondary-action" type="button">Restaurar desde nube</button>
+            <button id="cloud-sign-out" class="secondary-action">Cerrar sesion cloud</button>
+          </div>
+          <form id="cloud-group-invite-form" class="inline-form">
+            <label>Correo para invitar al grupo activo<input type="email" name="cloudInviteEmail" required placeholder="persona@correo.com"></label>
+            <button type="submit" class="primary-action">Invitar cloud</button>
+          </form>
+          <div class="button-row">
+            <button id="cloud-publish-group" class="secondary-action" type="button">Publicar grupo activo</button>
+            <button id="cloud-copy-join-link" class="secondary-action" type="button">Copiar link para unirse</button>
+            <button id="cloud-push-group" class="secondary-action" type="button">Subir cambios del grupo</button>
+            <button id="cloud-pull-group" class="secondary-action" type="button">Traer cambios del grupo</button>
+            <button id="cloud-load-groups" class="secondary-action" type="button">Cargar grupos compartidos</button>
+          </div>
+          <div id="cloud-conflict-status" class="cloud-sync-status" hidden></div>
+          <div class="section-heading compact-heading">
+            <h2>Accesos del grupo activo</h2>
+            <span>Cloud</span>
+          </div>
+          <div id="cloud-access-list" class="stack-list"></div>
+          <div id="cloud-groups-list" class="stack-list"></div>
+        </div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Uso actual</h2>
+              <span>Plan gratuito futuro</span>
+            </div>
+            <div id="plan-status" class="stack-list"></div>
+          </section>
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Datos locales</h2>
+              <span>Resumen</span>
+            </div>
+            <div id="data-status" class="stack-list"></div>
+          </section>
+        </div>
+        <div class="two-column">
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Categorias familiares</h2>
+              <span>Personalizables</span>
+            </div>
+            <form id="family-category-form" class="inline-form">
+              <label>Nueva categoria<input type="text" name="categoryName" required placeholder="Ej. Mascotas"></label>
+              <button type="submit" class="primary-action">Agregar</button>
+            </form>
+            <form id="family-category-budget-form" class="inline-form">
+              <label>Categoria<select name="categoryName" required></select></label>
+              <label>Presupuesto mensual<input type="number" min="0" step="0.01" name="categoryBudget" placeholder="0 para quitar"></label>
+              <button type="submit" class="secondary-action">Guardar limite</button>
+            </form>
+            <div id="family-categories-list" class="tag-list"></div>
+            <div id="family-category-budgets-list" class="stack-list"></div>
+          </section>
+          <section class="panel">
+            <div class="section-heading">
+              <h2>Categorias de negocio</h2>
+              <span>Personalizables</span>
+            </div>
+            <form id="business-category-form" class="inline-form">
+              <label>Nueva categoria<input type="text" name="categoryName" required placeholder="Ej. Software"></label>
+              <button type="submit" class="primary-action">Agregar</button>
+            </form>
+            <form id="business-category-budget-form" class="inline-form">
+              <label>Categoria<select name="categoryName" required></select></label>
+              <label>Presupuesto mensual<input type="number" min="0" step="0.01" name="categoryBudget" placeholder="0 para quitar"></label>
+              <button type="submit" class="secondary-action">Guardar limite</button>
+            </form>
+            <div id="business-categories-list" class="tag-list"></div>
+            <div id="business-category-budgets-list" class="stack-list"></div>
+          </section>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Perfil local</h2>
+            <span>Primer acceso</span>
+          </div>
+          <div id="profile-status" class="stack-list"></div>
+          <div class="button-row">
+            <button id="restart-onboarding" class="secondary-action">Cambiar uso inicial</button>
+            <button id="sign-out-app" class="danger-action">Cerrar sesion</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Actividad reciente</h2>
+            <span>Grupo activo</span>
+          </div>
+          <div id="activity-list" class="stack-list"></div>
+        </div>
+        <div class="panel">
+          <div class="section-heading">
+            <h2>Configuracion basica</h2>
+            <span>Datos locales</span>
+          </div>
+          <p class="muted">Los datos se guardan en este navegador usando localStorage. No hay servidor ni cuenta todavia.</p>
+          <div class="button-row">
+            <button id="quick-save" class="secondary-action">Guardar ahora</button>
+            <button id="download-backup" class="secondary-action">Descargar copia JSON</button>
+            <button id="export-family-csv" class="secondary-action">CSV familia</button>
+            <button id="export-business-csv" class="secondary-action">CSV negocio</button>
+            <button id="export-all-csv" class="secondary-action">CSV completo</button>
+            <label class="file-action">Restaurar copia JSON<input id="import-backup" type="file" accept="application/json"></label>
+            <button id="reset-demo-data" class="secondary-action">Restaurar datos de prueba</button>
+            <button id="clear-data" class="danger-action">Limpiar datos locales</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="cloud-config.js"></script>
+  <script src="app.js"></script>
+  <script src="cloud.js"></script>
+</body>
+</html>
