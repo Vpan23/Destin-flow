@@ -106,9 +106,15 @@
       return;
     }
 
-    cloudState.client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
-    const { data } = await cloudState.client.auth.getUser();
-    cloudState.user = data.user || null;
+    cloudState.client = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true
+      }
+    });
+    const { data: sessionData } = await cloudState.client.auth.getSession();
+    cloudState.user = sessionData.session?.user || null;
     if (cloudState.user) await ensureProfile();
     renderCloudUser();
     if (cloudState.user) {
