@@ -293,23 +293,31 @@ function loadDataForUser(email, usageMode = "both", authProvider = "local", disp
 function loadData() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (!saved) {
-    const seed = normalizeData(createSeedData());
     const session = getStorageSession();
     if (session?.email) {
-      applyProfileToData(seed, session.email, "both", session.authProvider || "local");
+      const starter = applyProfileToData(
+        normalizeData(createStarterData(session.email.split("@")[0] || "Yo", "both", session.email)),
+        session.email,
+        "both",
+        session.authProvider || "google",
+        session.email.split("@")[0] || "Yo"
+      );
+      saveData(starter, { markDirty: false });
+      return starter;
     }
+    const seed = normalizeData(createSeedData());
     saveData(seed, { markDirty: false });
     return seed;
   }
 
   try {
     let data = normalizeData(JSON.parse(saved));
-    if (data.userProfile?.authProvider === "local" && looksLikeUntouchedDemoData(data)) {
+    if (data.userProfile?.email && looksLikeUntouchedDemoData(data)) {
       data = applyProfileToData(
         normalizeData(createStarterData(data.userProfile.displayName || "Yo", data.userProfile.usageMode || "both", data.userProfile.email)),
         data.userProfile.email,
         data.userProfile.usageMode || "both",
-        "local",
+        data.userProfile.authProvider || "local",
         data.userProfile.displayName || "Yo"
       );
       saveData(data, { markDirty: false });
