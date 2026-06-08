@@ -1,0 +1,15 @@
+drop policy if exists "cloud_snapshots_select_self" on public.cloud_snapshots;
+drop policy if exists "cloud_snapshots_insert_self" on public.cloud_snapshots;
+drop policy if exists "cloud_snapshots_update_self" on public.cloud_snapshots;
+drop policy if exists "cloud_groups_select_admin_or_invited" on public.cloud_groups;
+drop policy if exists "cloud_groups_insert_admin" on public.cloud_groups;
+drop policy if exists "cloud_groups_update_admin" on public.cloud_groups;
+drop policy if exists "cloud_groups_delete_admin" on public.cloud_groups;
+drop policy if exists "cloud_group_access_select_related" on public.cloud_group_access;
+drop policy if exists "cloud_group_access_insert_admin" on public.cloud_group_access;
+drop policy if exists "cloud_group_access_update_admin_or_self" on public.cloud_group_access;
+drop policy if exists "cloud_group_access_delete_admin" on public.cloud_group_access;
+drop policy if exists "cloud_expenses_select_group" on public.cloud_expenses;
+drop policy if exists "cloud_expenses_insert_group_writer" on public.cloud_expenses;
+drop policy if exists "cloud_expenses_update_group_writer" on public.cloud_expenses;
+drop policy if exists "cloud_expenses_delete_group_admin" on public.cloud_expenses;

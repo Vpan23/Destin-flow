@@ -66,6 +66,7 @@ Para usar **Continuar con Google** debes activar el proveedor Google en Supabase
 2. Activa Google y pega el Client ID y Client Secret de Google Cloud.
 3. En Google Cloud agrega la redirect URL que Supabase muestra en el panel del proveedor.
 4. En Supabase agrega tu URL de app en **Authentication > URL Configuration > Redirect URLs**.
+5. En `cloud-config.js`, coloca tu URL publicada en `appUrl`, por ejemplo `https://tu_usuario.github.io/destin-flow/`.
 
 Nota: Google OAuth necesita regresar a una direccion `http://`, `https://` o una URL publicada. Si abres la app como `file://`, el boton mostrara un aviso. Para probar Google localmente puedes servir la carpeta en `http://localhost`.
 

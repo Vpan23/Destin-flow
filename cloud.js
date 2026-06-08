@@ -315,13 +315,19 @@
   }
 
   function getJoinUrl(token) {
-    return `${window.location.origin}${window.location.pathname}#join=${encodeURIComponent(token)}`;
+    return `${getAppBaseUrl()}#join=${encodeURIComponent(token)}`;
   }
 
   function clearJoinHash() {
     if ((window.location.hash || "").includes("join=")) {
-      window.history.replaceState(null, "", `${window.location.origin}${window.location.pathname}`);
+      window.history.replaceState(null, "", getAppBaseUrl());
     }
+  }
+
+  function getAppBaseUrl() {
+    const configuredUrl = String(config.appUrl || "").trim();
+    const baseUrl = configuredUrl || window.location.href.split("#")[0];
+    return baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
   }
 
   async function copyText(text) {
@@ -1042,7 +1048,7 @@
       return;
     }
 
-    const redirectTo = window.location.href.split("#")[0];
+    const redirectTo = getAppBaseUrl();
     const joinToken = getJoinTokenFromUrl();
     if (joinToken) localStorage.setItem(pendingJoinKey, joinToken);
     const { error } = await cloudState.client.auth.signInWithOAuth({
