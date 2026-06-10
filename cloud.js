@@ -8,6 +8,7 @@
     client: null,
     user: null,
     realtimeChannel: null,
+    fallbackPollTimer: null,
     autoPushTimer: null,
     applyingRemote: false
   };
@@ -146,6 +147,7 @@
       setCloudConflictStatus(null);
       togglePasswordAuth(true);
       unsubscribeFromRealtimeGroups();
+      stopFallbackPolling();
       return;
     }
     setCloudStatus(`Conectado a la nube como ${cloudState.user.email}.`);
@@ -307,6 +309,14 @@
   function getActiveLocalGroup(payload) {
     const groups = Array.isArray(payload.groups) ? payload.groups : [];
     return groups.find((group) => group.id === payload.activeGroupId) || groups[0] || null;
+  }
+
+  function isStarterLocalGroup(group) {
+    if (!group) return false;
+    const hasNoExpenses = !Array.isArray(group.expenses) || group.expenses.length === 0;
+    const hasOneMember = !Array.isArray(group.members) || group.members.length <= 1;
+    const looksStarterName = ["Mi grupo", "Mi negocio"].includes(group.name || group.familyGroup?.name || "");
+    return hasNoExpenses && hasOneMember && looksStarterName;
   }
 
   function createJoinToken() {
@@ -489,6 +499,16 @@
     cloudState.realtimeChannel = null;
   }
 
+  function stopFallbackPolling() {
+    window.clearInterval(cloudState.fallbackPollTimer);
+    cloudState.fallbackPollTimer = null;
+  }
+
+  function startFallbackPolling() {
+    if (!cloudState.client || !cloudState.user || cloudState.fallbackPollTimer) return;
+    cloudState.fallbackPollTimer = window.setInterval(syncFromCloudIfNeeded, 8000);
+  }
+
   function subscribeToRealtimeGroups() {
     if (!cloudState.client || !cloudState.user) return;
     unsubscribeFromRealtimeGroups();
@@ -509,6 +529,7 @@
           setCloudStatus(`Conectado a la nube como ${cloudState.user.email}. Sincronizacion en tiempo real activa.`);
         }
       });
+    startFallbackPolling();
   }
 
   function shouldApplyRealtimeGroup(cloudGroup) {
@@ -609,6 +630,37 @@
       }
     } catch (error) {
       setCloudStatus(getCloudErrorMessage(error) || "No se pudieron cargar gastos sincronizados por registro.");
+    }
+  }
+
+  async function syncFromCloudIfNeeded() {
+    if (!cloudState.client || !cloudState.user || cloudState.applyingRemote) return;
+    try {
+      await loadExpenseRowsForActiveGroup();
+      const { payload, group, cloudGroup } = await findCloudGroupForActiveLocalGroup();
+      if (!cloudGroup?.payload) return;
+      const cloudIsNewer = parseTime(cloudGroup.updated_at) > parseTime(group.cloudSyncedAt || payload.sync?.lastCloudPushAt) + 1000;
+      if (!cloudIsNewer) return;
+      const conflict = getCloudConflict(payload, group, cloudGroup);
+      if (conflict.level === "danger") {
+        setCloudConflictStatus(conflict);
+        return;
+      }
+      if (conflict.level !== "warning") return;
+      cloudState.applyingRemote = true;
+      saveLocalPayload(markPayloadSynced(
+        mergeCloudGroupIntoLocal(payload, cloudGroup),
+        new Date().toISOString().slice(0, 19),
+        cloudGroup.payload.id
+      ));
+      setCloudStatus("Cambios recibidos desde la nube.");
+      if (window.DestinFlowApp?.reloadLocalState) window.DestinFlowApp.reloadLocalState();
+    } catch (error) {
+      setCloudStatus(getCloudErrorMessage(error) || "No se pudo revisar la nube automaticamente.");
+    } finally {
+      window.setTimeout(() => {
+        cloudState.applyingRemote = false;
+      }, 1000);
     }
   }
 
@@ -810,11 +862,34 @@
       return;
     }
 
-    setCloudGroupsList(data || []);
-    setCloudStatus(`${(data || []).length} grupo(s) cloud disponibles.`);
+    const cloudGroups = data || [];
+    const imported = autoImportCloudGroupIfLocalIsEmpty(cloudGroups);
+    setCloudGroupsList(cloudGroups);
+    setCloudStatus(imported ? "Grupo cloud cargado en este dispositivo." : `${cloudGroups.length} grupo(s) cloud disponibles.`);
     await loadActiveGroupAccess();
     await loadExpenseRowsForActiveGroup();
     await refreshActiveGroupCloudStatus();
+  }
+
+  function autoImportCloudGroupIfLocalIsEmpty(cloudGroups) {
+    if (!cloudGroups.length) return false;
+    try {
+      const payload = getLocalPayload();
+      const activeGroup = getActiveLocalGroup(payload);
+      const alreadyHasCloudGroup = cloudGroups.some((item) => item.payload?.id === activeGroup?.id || item.local_group_id === activeGroup?.id);
+      if (alreadyHasCloudGroup || !isStarterLocalGroup(activeGroup)) return false;
+      const nextPayload = markPayloadSynced(
+        mergeCloudGroupIntoLocal(payload, cloudGroups[0]),
+        new Date().toISOString().slice(0, 19),
+        cloudGroups[0].payload.id
+      );
+      saveLocalPayload(nextPayload);
+      if (window.DestinFlowApp?.reloadLocalState) window.DestinFlowApp.reloadLocalState();
+      return true;
+    } catch (error) {
+      setCloudStatus(error.message || "No se pudo cargar automaticamente el grupo cloud.");
+      return false;
+    }
   }
 
   async function loadActiveGroupAccess() {
@@ -1159,6 +1234,10 @@
     window.addEventListener("destin-flow:expense-delete", (event) => {
       if (cloudState.applyingRemote) return;
       pushDeletedExpenseRow(event.detail?.expense, event.detail?.activeGroupId);
+    });
+    window.addEventListener("focus", syncFromCloudIfNeeded);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) syncFromCloudIfNeeded();
     });
 
     initCloud();
