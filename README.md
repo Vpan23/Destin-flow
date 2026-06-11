@@ -97,6 +97,18 @@ Nota: Google OAuth necesita regresar a una direccion `http://`, `https://` o una
 
 ## Historial de versiones
 
+### v0.1.9-beta - Add cloud sync diagnostics
+
+- Agrega diagnostico visible de cuenta local, cuenta nube, grupo activo y ultimo error.
+- Agrega el boton **Reparar sincronizacion** para publicar, subir y cargar el grupo activo desde cloud.
+- Facilita revisar por que un celular o computadora queda sin recibir datos.
+
+### v0.1.8-beta - Add version history to README
+
+- Agrega historial de versiones al README.
+- Define que cada cambio incluya version y nombre de commit.
+- Deja documentadas las mejoras recientes de sincronizacion cloud.
+
 ### v0.1.7-beta - Auto publish cloud groups
 
 - Publica automaticamente el grupo activo cuando una cuenta cloud entra por primera vez.

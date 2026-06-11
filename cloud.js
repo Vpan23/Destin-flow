@@ -78,7 +78,8 @@
       "cloud-copy-join-link",
       "cloud-push-group",
       "cloud-pull-group",
-      "cloud-load-groups"
+      "cloud-load-groups",
+      "cloud-repair-sync"
     ].forEach((id) => {
       const element = document.getElementById(id);
       if (element) element.disabled = !enabled;
@@ -199,6 +200,7 @@
       payload.sync.lastCloudError = message || "No se pudo sincronizar con la nube.";
       saveLocalPayload(payload);
       if (window.DestinFlowApp?.reloadLocalState) window.DestinFlowApp.reloadLocalState();
+      refreshCloudDiagnostics();
     } catch (error) {
       // If local data is not ready, the cloud status panel still shows the error.
     }
@@ -269,6 +271,39 @@
     element.hidden = !conflict;
     element.className = `cloud-sync-status ${conflict?.level || ""}`;
     element.textContent = conflict?.message || "";
+  }
+
+  function setCloudDiagnostics(items = []) {
+    const element = document.getElementById("cloud-diagnostics");
+    if (!element) return;
+    const visibleItems = items.filter(Boolean);
+    element.hidden = !visibleItems.length;
+    element.className = "cloud-sync-status warning";
+    element.replaceChildren();
+    visibleItems.forEach((item) => {
+      const line = document.createElement("div");
+      line.textContent = item;
+      element.appendChild(line);
+    });
+  }
+
+  function refreshCloudDiagnostics(extraItems = []) {
+    try {
+      const payload = getLocalPayload();
+      const group = getActiveLocalGroup(payload);
+      const sync = payload.sync || {};
+      const items = [
+        `Cuenta local: ${payload.userProfile?.email || "sin perfil"}`,
+        `Cuenta nube: ${cloudState.user?.email || "sin sesion"}`,
+        `Grupo activo: ${group?.name || "sin grupo"}`,
+        `Cambios pendientes: ${sync.hasPendingChanges ? "si" : "no"}`,
+        `Ultima subida: ${sync.lastCloudPushAt || "nunca"}`
+      ];
+      if (sync.lastCloudError) items.push(`Ultimo error: ${sync.lastCloudError}`);
+      setCloudDiagnostics(items.concat(extraItems));
+    } catch (error) {
+      setCloudDiagnostics([error.message || "No se pudo leer el diagnostico local."].concat(extraItems));
+    }
   }
 
   function getUserStorageKey(email) {
@@ -720,7 +755,34 @@
       if (cloudGroup?.id || !group) return;
       await publishActiveGroup({ automatic: true });
     } catch (error) {
-      setCloudStatus(getCloudErrorMessage(error) || "No se pudo preparar el grupo en la nube.");
+      const message = getCloudErrorMessage(error) || "No se pudo preparar el grupo en la nube.";
+      setLocalSyncError(message);
+      setCloudStatus(message);
+    }
+  }
+
+  async function repairCloudSync() {
+    if (!cloudState.client || !cloudState.user) {
+      const message = "Inicia sesion cloud antes de reparar la sincronizacion.";
+      setLocalSyncError(message);
+      return setCloudStatus(message);
+    }
+
+    try {
+      setCloudStatus("Reparando sincronizacion cloud...");
+      await ensureProfile();
+      await publishActiveGroup({ automatic: true });
+      await pushActiveExpenseRows();
+      await pushActiveGroupChanges({ automatic: true, force: true });
+      await loadSharedGroups();
+      await syncFromCloudIfNeeded();
+      refreshCloudDiagnostics(["Reparacion ejecutada."]);
+      setCloudStatus("Sincronizacion reparada.");
+    } catch (error) {
+      const message = getCloudErrorMessage(error) || "No se pudo reparar la sincronizacion.";
+      setLocalSyncError(message);
+      setCloudStatus(message);
+      refreshCloudDiagnostics([message]);
     }
   }
 
@@ -1219,6 +1281,7 @@
     const pushGroupButton = document.getElementById("cloud-push-group");
     const pullGroupButton = document.getElementById("cloud-pull-group");
     const loadGroupsButton = document.getElementById("cloud-load-groups");
+    const repairSyncButton = document.getElementById("cloud-repair-sync");
     const inviteGroupForm = document.getElementById("cloud-group-invite-form");
     const signOutButton = document.getElementById("cloud-sign-out");
 
@@ -1268,6 +1331,10 @@
 
     if (loadGroupsButton) {
       loadGroupsButton.addEventListener("click", loadSharedGroups);
+    }
+
+    if (repairSyncButton) {
+      repairSyncButton.addEventListener("click", repairCloudSync);
     }
 
     if (inviteGroupForm) {
