@@ -95,6 +95,32 @@ Nota: Google OAuth necesita regresar a una direccion `http://`, `https://` o una
 21. Usar **Copiar link para unirse** y abrirlo en otro navegador o perfil.
 22. Entrar con Google para unirse automaticamente al grupo.
 
+## Historial de versiones
+
+### v0.1.7-beta - Auto publish cloud groups
+
+- Publica automaticamente el grupo activo cuando una cuenta cloud entra por primera vez.
+- Reduce la necesidad de presionar manualmente **Publicar grupo activo**.
+- Prepara el grupo para sincronizacion entre dispositivos al refrescar la pagina.
+
+### v0.1.6-beta - Show cloud sync errors
+
+- Muestra **Error de nube** cuando Supabase rechaza una sincronizacion.
+- Guarda el ultimo error cloud en el estado local para facilitar diagnostico.
+- Limpia el error cuando la sincronizacion se completa correctamente.
+
+### v0.1.5-beta - Fix automatic sync for group settings
+
+- Permite sincronizar cambios de miembros y configuracion aunque la nube tenga cambios recientes.
+- Conserva gastos al mezclar cambios locales con version cloud.
+- Evita que cambios de configuracion queden indefinidamente como **Pendiente de nube**.
+
+### v0.1.4-beta - Improve cloud sync fallback polling
+
+- Agrega revision automatica de nube cada 8 segundos.
+- Revisa la nube al volver a enfocar la pestana.
+- Mejora la recepcion de cambios entre celular y computadora cuando Realtime tarda o no dispara.
+
 ## Futuro backend
 
 Para version real multiusuario se necesita backend con usuarios, login, base de datos, correos de invitacion, permisos reales y sincronizacion en nube.
