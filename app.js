@@ -935,10 +935,10 @@ function renderSyncStatus() {
   element.classList.toggle("synced-sync", !sync.hasPendingChanges && Boolean(sync.lastCloudPushAt));
 
   if (sync.hasPendingChanges) {
-    element.textContent = "Pendiente de nube";
-    element.title = sync.lastLocalChangeAt
+    element.textContent = sync.lastCloudError ? "Error de nube" : "Pendiente de nube";
+    element.title = sync.lastCloudError || (sync.lastLocalChangeAt
       ? `Ultimo cambio local: ${formatTime(sync.lastLocalChangeAt)}`
-      : "Hay cambios locales sin subir.";
+      : "Hay cambios locales sin subir.");
     return;
   }
 

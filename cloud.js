@@ -180,6 +180,7 @@
   function markPayloadSynced(payload, cloudTime = new Date().toISOString().slice(0, 19), groupId = "") {
     payload.sync = payload.sync || {};
     payload.sync.hasPendingChanges = false;
+    payload.sync.lastCloudError = "";
     payload.sync.lastCloudPushAt = cloudTime;
     payload.lastSavedAt = cloudTime;
     if (groupId && Array.isArray(payload.groups)) {
@@ -187,6 +188,18 @@
       if (group) group.cloudSyncedAt = cloudTime;
     }
     return payload;
+  }
+
+  function setLocalSyncError(message) {
+    try {
+      const payload = getLocalPayload();
+      payload.sync = payload.sync || {};
+      payload.sync.lastCloudError = message || "No se pudo sincronizar con la nube.";
+      saveLocalPayload(payload);
+      if (window.DestinFlowApp?.reloadLocalState) window.DestinFlowApp.reloadLocalState();
+    } catch (error) {
+      // If local data is not ready, the cloud status panel still shows the error.
+    }
   }
 
   function markLocalPayloadSynced(payload = null, groupId = "") {
@@ -926,13 +939,19 @@
   }
 
   function scheduleRealtimePush() {
-    if (!cloudState.client || !cloudState.user || cloudState.applyingRemote) return;
+    if (cloudState.applyingRemote) return;
+    if (!cloudState.client || !cloudState.user) {
+      setLocalSyncError("No hay sesion cloud activa para subir estos cambios.");
+      return;
+    }
     window.clearTimeout(cloudState.autoPushTimer);
     cloudState.autoPushTimer = window.setTimeout(() => {
       pushActiveExpenseRows()
         .then(() => pushActiveGroupChanges({ automatic: true }))
         .catch((error) => {
-          setCloudStatus(getCloudErrorMessage(error) || "No se pudo sincronizar automaticamente.");
+          const message = getCloudErrorMessage(error) || "No se pudo sincronizar automaticamente.";
+          setLocalSyncError(message);
+          setCloudStatus(message);
         });
     }, 1400);
   }
@@ -969,9 +988,15 @@
       const { error } = await cloudState.client
         .from("cloud_expenses")
         .upsert(rows, { onConflict: "cloud_group_id,local_expense_id" });
-      if (error) setCloudStatus(getCloudErrorMessage(error));
+      if (error) {
+        const message = getCloudErrorMessage(error);
+        setLocalSyncError(message);
+        setCloudStatus(message);
+      }
     } catch (error) {
-      setCloudStatus(getCloudErrorMessage(error) || "No se pudieron sincronizar los gastos por registro.");
+      const message = getCloudErrorMessage(error) || "No se pudieron sincronizar los gastos por registro.";
+      setLocalSyncError(message);
+      setCloudStatus(message);
     }
   }
 
@@ -995,9 +1020,15 @@
           updated_by: cloudState.user.id,
           updated_at: new Date().toISOString()
         }, { onConflict: "cloud_group_id,local_expense_id" });
-      if (error) setCloudStatus(getCloudErrorMessage(error));
+      if (error) {
+        const message = getCloudErrorMessage(error);
+        setLocalSyncError(message);
+        setCloudStatus(message);
+      }
     } catch (error) {
-      setCloudStatus(getCloudErrorMessage(error) || "No se pudo sincronizar la eliminacion del gasto.");
+      const message = getCloudErrorMessage(error) || "No se pudo sincronizar la eliminacion del gasto.";
+      setLocalSyncError(message);
+      setCloudStatus(message);
     }
   }
 
@@ -1038,13 +1069,19 @@
         })
         .eq("id", cloudGroup.id);
 
-      if (error) return setCloudStatus(getCloudErrorMessage(error));
+      if (error) {
+        const message = getCloudErrorMessage(error);
+        setLocalSyncError(message);
+        return setCloudStatus(message);
+      }
       await pushActiveExpenseRows();
       markLocalPayloadSynced(payload, group.id);
       setCloudStatus(options.automatic ? "Cambio sincronizado en tiempo real." : "Cambios del grupo subidos a la nube.");
       if (!options.automatic) await loadSharedGroups();
     } catch (error) {
-      setCloudStatus(getCloudErrorMessage(error) || "No se pudieron subir los cambios del grupo.");
+      const message = getCloudErrorMessage(error) || "No se pudieron subir los cambios del grupo.";
+      setLocalSyncError(message);
+      setCloudStatus(message);
     }
   }
 
