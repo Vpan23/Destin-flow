@@ -121,6 +121,7 @@
     if (cloudState.user) {
       await handleJoinLink();
       await loadSharedGroups();
+      await ensureActiveGroupPublished();
       subscribeToRealtimeGroups();
     } else {
       await handleJoinLink();
@@ -133,6 +134,7 @@
       if (cloudState.user) {
         await handleJoinLink();
         await loadSharedGroups();
+        await ensureActiveGroupPublished();
         subscribeToRealtimeGroups();
       } else {
         unsubscribeFromRealtimeGroups();
@@ -222,7 +224,9 @@
     if (!cloudGroup?.payload) {
       return {
         level: payload.sync?.hasPendingChanges ? "warning" : "safe",
-        message: "Este grupo aun no existe en la nube. Puedes publicarlo para compartirlo."
+        message: cloudState.user
+          ? "Este grupo se preparara automaticamente en la nube."
+          : "Este grupo aun no existe en la nube. Inicia sesion cloud para sincronizarlo."
       };
     }
 
@@ -709,6 +713,17 @@
     }
   }
 
+  async function ensureActiveGroupPublished() {
+    if (!cloudState.client || !cloudState.user || cloudState.applyingRemote) return;
+    try {
+      const { group, cloudGroup } = await findCloudGroupForActiveLocalGroup();
+      if (cloudGroup?.id || !group) return;
+      await publishActiveGroup({ automatic: true });
+    } catch (error) {
+      setCloudStatus(getCloudErrorMessage(error) || "No se pudo preparar el grupo en la nube.");
+    }
+  }
+
   async function uploadLocalSnapshot() {
     // Snapshot sync keeps the MVP reliable before adding row-by-row collaboration.
     if (!cloudState.client || !cloudState.user) return setCloudStatus("Inicia sesion cloud antes de subir datos.");
@@ -732,7 +747,7 @@
     }
   }
 
-  async function publishActiveGroup() {
+  async function publishActiveGroup(options = {}) {
     if (!cloudState.client || !cloudState.user) return setCloudStatus("Inicia sesion cloud antes de publicar un grupo.");
 
     try {
@@ -761,7 +776,7 @@
       if (!error) {
         markLocalPayloadSynced(payload, group.id);
         await pushActiveExpenseRows();
-        setCloudStatus("Grupo activo publicado en la nube.");
+        setCloudStatus(options.automatic ? "Grupo activo preparado en la nube." : "Grupo activo publicado en la nube.");
         await loadSharedGroups();
         await loadActiveGroupAccess();
         await refreshActiveGroupCloudStatus();
