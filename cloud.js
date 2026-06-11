@@ -740,11 +740,7 @@
           name: group.name || group.familyGroup?.name || "Grupo sin nombre",
           type: group.type || "otro",
           admin_user_id: cloudState.user.id,
-          payload: {
-            ...group,
-            cloudLastClientId: getRealtimeClientId(),
-            cloudLastUpdatedBy: cloudState.user.email || ""
-          },
+          payload: buildCloudGroupPayload(group, null),
           join_token: group.cloudJoinToken,
           updated_at: new Date().toISOString()
         }, { onConflict: "admin_user_id,local_group_id" });
@@ -933,8 +929,22 @@
     if (!cloudState.client || !cloudState.user || cloudState.applyingRemote) return;
     window.clearTimeout(cloudState.autoPushTimer);
     cloudState.autoPushTimer = window.setTimeout(() => {
-      pushActiveExpenseRows().then(() => pushActiveGroupChanges({ automatic: true }));
+      pushActiveExpenseRows()
+        .then(() => pushActiveGroupChanges({ automatic: true }))
+        .catch((error) => {
+          setCloudStatus(getCloudErrorMessage(error) || "No se pudo sincronizar automaticamente.");
+        });
     }, 1400);
+  }
+
+  function buildCloudGroupPayload(localGroup, cloudGroup) {
+    const cloudPayload = cloudGroup?.payload || {};
+    return {
+      ...localGroup,
+      expenses: mergeExpenses(cloudPayload.expenses || [], localGroup.expenses || []),
+      cloudLastClientId: getRealtimeClientId(),
+      cloudLastUpdatedBy: cloudState.user.email || ""
+    };
   }
 
   async function pushActiveExpenseRows() {
@@ -997,20 +1007,23 @@
     try {
       const { payload, group, cloudGroup } = await findCloudGroupForActiveLocalGroup();
       if (!cloudGroup?.id) {
-        if (!options.automatic) await publishActiveGroup();
+        await publishActiveGroup();
         return;
       }
 
       const conflict = getCloudConflict(payload, group, cloudGroup);
       if (conflict.level === "danger") {
         if (options.automatic) {
-          setCloudConflictStatus(conflict);
-          return setCloudStatus("Hay cambios locales y cambios en la nube. Revisa antes de sobrescribir.");
-        }
-        const confirmed = window.confirm("La nube tiene cambios mas recientes y tambien tienes cambios locales. Si subes ahora, puedes sobrescribir cambios de otra persona. Continuar?");
-        if (!confirmed) {
-          setCloudConflictStatus(conflict);
-          return setCloudStatus("Subida cancelada para evitar sobrescribir cambios.");
+          setCloudConflictStatus({
+            level: "warning",
+            message: "La nube tenia cambios recientes; se conservaron los gastos y se subio la configuracion local."
+          });
+        } else {
+          const confirmed = window.confirm("La nube tiene cambios mas recientes y tambien tienes cambios locales. Si subes ahora, puedes sobrescribir cambios de otra persona. Continuar?");
+          if (!confirmed) {
+            setCloudConflictStatus(conflict);
+            return setCloudStatus("Subida cancelada para evitar sobrescribir cambios.");
+          }
         }
       }
 
@@ -1019,11 +1032,7 @@
         .update({
           name: group.name || group.familyGroup?.name || "Grupo sin nombre",
           type: group.type || "otro",
-          payload: {
-            ...group,
-            cloudLastClientId: getRealtimeClientId(),
-            cloudLastUpdatedBy: cloudState.user.email || ""
-          },
+          payload: buildCloudGroupPayload(group, cloudGroup),
           join_token: group.cloudJoinToken || cloudGroup.join_token || createJoinToken(),
           updated_at: new Date().toISOString()
         })
